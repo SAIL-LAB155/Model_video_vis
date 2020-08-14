@@ -1,7 +1,7 @@
 import os
 
 src_sppe_folder = "weights/sppe"
-video_output_folder = "output/sample"
+video_output_folder = "output/sppe"
 video_name = "video/video_sample/video4_Trim.mp4"
 
 yolo_cfg = "config/yolo_cfg/yolov3.cfg"

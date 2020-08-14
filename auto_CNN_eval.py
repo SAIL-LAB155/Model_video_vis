@@ -1,7 +1,7 @@
 import os
 
-src_sppe_folder = "weights/CNN/test"
-video_output_folder = "output/sample"
+src_CNN_folder = "weights/CNN/test"
+video_output_folder = "output/CNN"
 video_name = "video/video_sample/video4_Trim.mp4"
 
 yolo_cfg = "config/yolo_cfg/yolov3.cfg"
@@ -13,9 +13,9 @@ model_path = []
 model_option_path = []
 model_name = []
 
-for model_fname in os.listdir(src_sppe_folder):
-    if os.path.isdir(os.path.join(src_sppe_folder, model_fname)):
-        model_folder = os.path.join(src_sppe_folder, model_fname)
+for model_fname in os.listdir(src_CNN_folder):
+    if os.path.isdir(os.path.join(src_CNN_folder, model_fname)):
+        model_folder = os.path.join(src_CNN_folder, model_fname)
         assert len(model_path) == len(model_option_path)
         for file_name in os.listdir(model_folder):
             file_path = os.path.join(model_folder, file_name)
