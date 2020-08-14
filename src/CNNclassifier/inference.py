@@ -1,6 +1,6 @@
 # -*- coding:utf-8 -*-
 from __future__ import print_function
-from config.config import device, input_size
+from config.config import device
 from config.opt import opt
 from .models import CNNModel, LeNet
 import torch
@@ -19,7 +19,7 @@ class CNNInference(object):
 
     def predict(self, img):
         img_tensor_list = []
-        img_tensor = image_normalize(img, size=input_size)
+        img_tensor = image_normalize(img, size=opt.input_size)
         img_tensor_list.append(torch.unsqueeze(img_tensor, 0))
         if len(img_tensor_list) > 0:
             input_tensor = torch.cat(tuple(img_tensor_list), dim=0)

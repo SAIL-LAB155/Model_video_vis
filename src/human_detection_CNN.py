@@ -27,8 +27,6 @@ class HumanDetection:
         self.img_black = np.array([])
         self.frame = np.array([])
         self.id2bbox = {}
-        self.kps = {}
-        self.kps_score = {}
         self.show_img = show_img
         self.CNN_model = CNNInference()
 
@@ -41,17 +39,12 @@ class HumanDetection:
         self.img_black = np.array([])
         self.frame = np.array([])
         self.id2bbox = {}
-        self.kps = {}
-        self.kps_score = {}
 
     def visualize(self):
         self.img_black = cv2.imread('video/black.jpg')
         if config.plot_bbox and self.boxes is not None:
             self.frame = self.BBV.visualize(self.boxes, self.frame, self.boxes_scores)
             # cv2.imshow("cropped", (torch_to_im(inps[0]) * 255))
-        if config.plot_kps and self.kps is not []:
-            self.frame = self.KPV.vis_ske(self.frame, self.kps, self.kps_score)
-            self.img_black = self.KPV.vis_ske_black(self.frame, self.kps, self.kps_score)
         if config.plot_id and self.id2bbox is not None:
             self.frame = self.IDV.plot_bbox_id(self.id2bbox, self.frame)
             # frame = self.IDV.plot_skeleton_id(id2ske, copy.deepcopy(img))

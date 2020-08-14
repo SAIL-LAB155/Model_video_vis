@@ -1,5 +1,5 @@
 import torch
-from config import config
+from config.opt import opt
 from src.yolo.preprocess import prep_frame
 from src.yolo.util import dynamic_write_results
 from src.yolo.darknet import Darknet
@@ -10,16 +10,15 @@ from ..utils.model_info import get_inference_time, print_model_param_nums, print
 class ObjectDetectionYolo(object):
     def __init__(self, cfg, weight, batchSize=1):
         self.det_model = Darknet(cfg)
-        # self.det_model.load_state_dict(torch.load('models/yolo/yolov3-spp.weights', map_location="cuda:0")['model'])
         self.det_model.load_weights(weight)
-        self.det_model.net_info['height'] = config.input_size
+        self.det_model.net_info['height'] = opt.input_size
         self.det_inp_dim = int(self.det_model.net_info['height'])
         assert self.det_inp_dim % 32 == 0
         assert self.det_inp_dim > 32
         if device != "cpu":
             self.det_model.cuda()
-        inf_time = get_inference_time(self.det_model, height=config.input_size, width=config.input_size)
-        flops = print_model_param_flops(self.det_model, input_width=config.input_size, input_height=config.input_size)
+        inf_time = get_inference_time(self.det_model, height=opt.input_size, width=opt.input_size)
+        flops = print_model_param_flops(self.det_model, input_width=opt.input_size, input_height=opt.input_size)
         params = print_model_param_nums(self.det_model)
         print("Detection: Inference time {}s, Params {}, FLOPs {}".format(inf_time, params, flops))
         self.det_model.eval()
@@ -32,7 +31,7 @@ class ObjectDetectionYolo(object):
         orig_img = []
         # im_name = []
         im_dim_list = []
-        img_k, orig_img_k, im_dim_list_k = prep_frame(frame, int(config.input_size))
+        img_k, orig_img_k, im_dim_list_k = prep_frame(frame, int(opt.input_size))
 
         img.append(img_k)
         orig_img.append(orig_img_k)
@@ -54,7 +53,7 @@ class ObjectDetectionYolo(object):
 
             prediction = self.det_model(img)
             # NMS process
-            dets = dynamic_write_results(prediction, config.confidence,  config.num_classes, nms=True, nms_conf=config.nms_thresh)
+            dets = dynamic_write_results(prediction, opt.confidence,  opt.num_classes, nms=True, nms_conf=opt.nms_thresh)
 
             if isinstance(dets, int) or dets.shape[0] == 0:
                 return None
