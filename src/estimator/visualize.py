@@ -5,6 +5,7 @@ import numpy as np
 from config.opt import opt
 
 pose_cls = opt.pose_cls
+pose_score = 0.05
 
 RED = (0, 0, 255)
 GREEN = (0, 255, 0)
@@ -92,7 +93,7 @@ class KeyPointVisualizer(object):
 
             # Draw keypoints
             for n in range(kp_scores.shape[0]):
-                if kp_scores[n] <= 0.05:
+                if kp_scores[n] <= pose_score:
                     continue
                 cor_x, cor_y = int(kp_preds[n, 0]), int(kp_preds[n, 1])
                 part_line[n] = (cor_x, cor_y)

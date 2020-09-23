@@ -23,7 +23,7 @@ from config.config import frame_size
 
 IP = ImgProcessor()
 fourcc = cv2.VideoWriter_fourcc(*'XVID')
-gray = True if "GRAY" or "gray" in opt.yolo_weight else False
+gray = True if "GRAY" in opt.yolo_weight or "gray" in opt.yolo_weight else False
 
 
 class VideoProcessor:
@@ -43,6 +43,8 @@ class VideoProcessor:
                 kps, boxes, kps_score = IP.process_img(frame, gray=gray)
                 img, black_img = IP.visualize()
 
+                # tmp = cv2.resize(img, (720, 540))
+                # cv2.imshow("res", tmp)
                 cv2.imshow("res", img)
                 cv2.waitKey(2)
                 if opt.out_video_path:
