@@ -2,6 +2,7 @@ import torch
 from ..utils.img import cropBox, im_to_torch
 from config.opt import opt
 import cv2
+import numpy as np
 
 
 def crop_bbox(orig_img, boxes):
@@ -13,7 +14,6 @@ def crop_bbox(orig_img, boxes):
             return None, None, None
 
         inp = im_to_torch(cv2.cvtColor(orig_img, cv2.COLOR_BGR2RGB))
-        # inp = orig_img
         inps, pt1, pt2 = crop_from_dets(inp, boxes)
         return inps, pt1, pt2
 
@@ -61,3 +61,10 @@ def crop_from_dets(img, boxes):
 def merge_box(gray_box, black_box, gray_scores, black_scores):
     return gray_box, gray_scores
 
+
+def eliminate_nan(id2box):
+    res = {}
+    for k, v in id2box.items():
+        if True not in np.isnan(v.numpy()):
+            res[k] = v
+    return res

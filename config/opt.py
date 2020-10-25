@@ -18,6 +18,8 @@ parser.add_argument('--pose_cfg', default=None, type=str,
                     help='The cfg')
 parser.add_argument('--pose_batch', default=80, type=int,
                     help='The batch of pose')
+parser.add_argument('--pose_thresh', default=[], type=list,
+                    help='epoch of lr decay')
 
 parser.add_argument('--input_height', default=320, type=int,
                     help='input_height')
@@ -31,7 +33,7 @@ parser.add_argument('--output_width', default=64, type=int,
 '''
 ----------------------------Detection model option---------------------------------------------------------
 '''
-parser.add_argument('--confidence', default=0.05, type=float,
+parser.add_argument('--confidence', default=0.8, type=float,
                     help='The confidence of yolo')
 parser.add_argument('--num_classes', default=80, type=int,
                     help='Number of class of yolo')

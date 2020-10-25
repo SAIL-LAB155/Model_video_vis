@@ -6,7 +6,7 @@ from config.config import track_plot_id
 
 
 class IDVisualizer(object):
-    def __init__(self, with_bbox=True):
+    def __init__(self, with_bbox=False):
         self.with_bbox = with_bbox
         self.boxid_color = (255, 255, 0)
         self.box_color = (0, 0, 255)

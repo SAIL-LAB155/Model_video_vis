@@ -73,14 +73,14 @@ class HumanDetection:
         pred = opt.CNN_class[idx]
         print("The prediction is {}".format(pred))
 
-    def classify(self):
+    def classify(self, frame):
         for box in self.id2bbox.values():
             x1, y1, x2, y2 = int(box[0]), int(box[1]), int(box[2]), int(box[3])
             x1 = 0 if x1 < 0 else x1
             y1 = 0 if y1 < 0 else y1
-            x2 = self.frame.shape[1] if x2 > self.frame.shape[1] else x2
-            y2 = self.frame.shape[0] if y2 > self.frame.shape[0] else y2
-            img = np.asarray(self.frame[y1:y2, x1:x2])
+            x2 = frame.shape[1] if x2 > frame.shape[1] else x2
+            y2 = frame.shape[0] if y2 > frame.shape[0] else y2
+            img = np.asarray(frame[y1:y2, x1:x2])
             # cv2.imshow("cut", img)
             # cv2.imwrite("img/tmp/0.jpg", img)
             out = self.CNN_model.predict(img)
@@ -88,7 +88,7 @@ class HumanDetection:
             pred = opt.CNN_class[idx]
             print(pred)
             text_location = (int((box[0]+box[2])/2)), int((box[1])+50)
-            cv2.putText(self.frame, pred, text_location, cv2.FONT_HERSHEY_SIMPLEX, 1, (100, 100, 255), 2)
+            cv2.putText(frame, pred, text_location, cv2.FONT_HERSHEY_SIMPLEX, 1, (100, 100, 255), 2)
 
 
 IP = HumanDetection()

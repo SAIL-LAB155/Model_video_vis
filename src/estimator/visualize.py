@@ -2,17 +2,21 @@ import torch
 import cv2
 from PIL import Image
 import numpy as np
+# from config.config import pose_cls, pose_thresh
+from src.utils.plot import colors, sizes, thicks
 from config.opt import opt
 
 pose_cls = opt.pose_cls
+pose_thresh = opt.pose_thresh
 
-RED = (0, 0, 255)
-GREEN = (0, 255, 0)
-BLUE = (255, 0, 0)
-CYAN = (255, 255, 0)
-YELLOW = (0, 255, 255)
-ORANGE = (0, 165, 255)
-PURPLE = (255, 0, 255)
+
+RED = colors["red"]
+GREEN = colors["green"]
+BLUE = colors["blue"]
+CYAN = colors["cyan"]
+YELLOW = colors["yellow"]
+ORANGE = colors["orange"]
+PURPLE = colors["purple"]
 
 if pose_cls == 13:
     coco_l_pair = [
@@ -53,6 +57,10 @@ coco_line_color = [(0, 215, 255), (0, 255, 204), (0, 134, 255), (0, 255, 50),
 mpii_p_color = [PURPLE, BLUE, BLUE, RED, RED, BLUE, BLUE, RED, RED, PURPLE, PURPLE, PURPLE, RED, RED, BLUE, BLUE]
 mpii_line_color = [PURPLE, BLUE, BLUE, RED, RED, BLUE, BLUE, RED, RED, PURPLE, PURPLE, RED, RED, BLUE, BLUE]
 
+body_parts = ["Nose", "Left eye", "Right eys", "Left ear", "Right ear", "Left shoulder", "Right shoulder", "Left elbow",
+              "Right elbow", "Left wrist", "Right wrist", "Left hip", "Right hip", "Left knee", "Right knee",
+              "Left ankle", "Right ankle"]
+
 
 class KeyPointVisualizer(object):
     def __init__(self, format="coco"):
@@ -67,16 +75,7 @@ class KeyPointVisualizer(object):
         else:
             raise NotImplementedError
 
-    def __visualize(self, frame, humans, scores, color):
-        if color == "black":
-            height, width = frame.shape[:2]
-            black = Image.open('src/black.jpg')
-            black = np.asarray(black)
-            bg = cv2.resize(black, (width, height))
-        elif color == "origin":
-            bg = frame
-        else:
-            raise ValueError("Wrong type of visualization mode! (black or origin)")
+    def __visualize(self, img, humans, scores, color):
 
         for idx in range(len(humans)):
             part_line = {}
@@ -92,28 +91,27 @@ class KeyPointVisualizer(object):
 
             # Draw keypoints
             for n in range(kp_scores.shape[0]):
-                if kp_scores[n] <= 0.05:
+                if kp_scores[n] <= pose_thresh[n]:
                     continue
                 cor_x, cor_y = int(kp_preds[n, 0]), int(kp_preds[n, 1])
                 part_line[n] = (cor_x, cor_y)
-                cv2.circle(bg, (cor_x, cor_y), 4, self.p_color[n], -1)
+                cv2.circle(img, (cor_x, cor_y), 4, self.p_color[n], -1)
             # Draw limbs
             for i, (start_p, end_p) in enumerate(self.l_pair):
                 if start_p in part_line and end_p in part_line:
                     start_xy = part_line[start_p]
                     end_xy = part_line[end_p]
-                    cv2.line(bg, start_xy, end_xy, self.line_color[i], 8)
-        return bg
+                    cv2.line(img, start_xy, end_xy, self.line_color[i], 8)
 
-    def vis_ske(self, frame, humans, scores):
+    def vis_ske(self, img, humans, scores):
         if isinstance(humans, dict):
             humans, scores = self.dict2ls(humans), self.dict2ls(scores)
-        return self.__visualize(frame, humans, scores, "origin")
+        return self.__visualize(img, humans, scores, "origin")
 
-    def vis_ske_black(self, frame, humans, scores):
+    def vis_ske_black(self, img, humans, scores):
         if isinstance(humans, dict):
             humans, scores = self.dict2ls(humans), self.dict2ls(scores)
-        return self.__visualize(frame, humans, scores, "black")
+        return self.__visualize(img, humans, scores, "black")
 
     def dict2ls(self, d):
         return [torch.FloatTensor(v) for k, v in d.items()]
@@ -129,5 +127,32 @@ class KeyPointVisualizer(object):
 
     def scoredict2tensor(self, d):
         pass
+
+
+class KpsScoreVisualizer:
+    def __init__(self):
+        if opt.pose_cls == 17:
+            self.selected_kps = [0,5,6,7,8,9,10,11,12,13,14,15,16]
+        else:
+            self.selected_kps = list(range(17))
+        self.parts_name = [body_parts[i] for i in self.selected_kps]
+
+    def draw_map(self, img, id2kpScore):
+        if len(id2kpScore) == 0:
+            return
+        cv2.line(img, (0, 40), (img.shape[1], 40), colors["green"], thicks["line"])
+        cv2.line(img, (290, 0), (290, img.shape[0]), colors["green"], thicks["line"])
+        for i, key in enumerate(id2kpScore):
+            cv2.putText(img, "id{}".format(key), (300 + i*150, 30), cv2.FONT_HERSHEY_PLAIN, sizes["table"],
+                        colors["green"], thicks["table"])
+        for p_idx, p_name in enumerate(self.parts_name):
+            cv2.putText(img, p_name, (30, 75 + p_idx*35), cv2.FONT_HERSHEY_PLAIN, sizes["table"],
+                        colors["green"], thicks["table"])
+        for id_i, (idx, scores) in enumerate(id2kpScore.items()):
+            parts = scores.squeeze()[self.selected_kps].tolist()
+            for part_i, s in enumerate(parts):
+                cv2.putText(img, str(round(s, 3)), (300 + id_i*150, 75 + part_i*35), cv2.FONT_HERSHEY_PLAIN,
+                            sizes["table"], colors["red"], thicks["table"])
+
 
 

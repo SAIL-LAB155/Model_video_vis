@@ -34,8 +34,8 @@ class VideoProcessor:
             if ret:
                 frame = cv2.resize(frame, frame_size)
                 IP.process_img(frame, gray=gray)
-                IP.classify()
                 img, black_img = IP.visualize()
+                IP.classify(black_img)
 
                 cv2.imshow("res", img)
                 cv2.waitKey(2)

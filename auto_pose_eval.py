@@ -1,11 +1,11 @@
 import os
 
-src_sppe_folder = "weights/sppe"
-video_output_folder = "output/sppe"
-video_name = "video/video_sample/video4_Trim.mp4"
+src_sppe_folder = "weights/sppe/new_test"
+video_output_folder = "output/ceiling"
+video_name = "video/ceiling/2.mp4"
 
-yolo_cfg = "config/yolo_cfg/yolov3.cfg"
-yolo_weight = 'weights/yolo/yolov3.weights'
+yolo_cfg = "weights/yolo/ceiling/2/yolov3-original-1cls-leaky.cfg"
+yolo_weight = 'weights/yolo/ceiling/2/best.weights'
 
 os.makedirs(video_output_folder, exist_ok=True)
 
