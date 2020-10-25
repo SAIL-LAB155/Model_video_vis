@@ -57,6 +57,7 @@ class VideoProcessor:
                 kps, boxes, kps_score = self.IP.process_img(frame)
                 img, img_black = self.IP.visualize()
                 cv2.imshow("res", cv2.resize(img, show_size))
+
                 cv2.waitKey(2)
                 if opt.out_video_path:
                     self.out.write(cv2.resize(img, store_size))

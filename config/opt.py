@@ -33,6 +33,7 @@ parser.add_argument('--output_width', default=64, type=int,
 '''
 ----------------------------Detection model option---------------------------------------------------------
 '''
+
 parser.add_argument('--confidence', default=0.8, type=float,
                     help='The confidence of yolo')
 parser.add_argument('--num_classes', default=80, type=int,
@@ -60,9 +61,9 @@ parser.add_argument('--CNN_weight', default=None, type=str,
 '''
 ---------------------------Video option----------------------------------------
 '''
-parser.add_argument('--video_height', default=540, type=int,
+parser.add_argument('--video_height', default=1080, type=int,
                     help='output_height')
-parser.add_argument('--video_width', default=720, type=int,
+parser.add_argument('--video_width', default=1920, type=int,
                     help='output_width')
 parser.add_argument('--video_path', default="video/video_sample/video4_Trim.mp4",type=str,
                     help='output_width')
