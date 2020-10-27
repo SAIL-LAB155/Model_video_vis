@@ -27,6 +27,8 @@ if os.path.exists(pose_option):
     except:
         pass
 
+print(opt.pose_thresh)
+
 resize_ratio = config.resize_ratio
 store_size = config.store_size
 show_size = config.show_size

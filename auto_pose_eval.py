@@ -1,6 +1,6 @@
 import os
 
-src_sppe_folder = "weights/sppe/new_test"
+src_sppe_folder = "weights/sppe/test_with_thresh"
 video_output_folder = "output/ceiling"
 video_name = "video/ceiling/2.mp4"
 
